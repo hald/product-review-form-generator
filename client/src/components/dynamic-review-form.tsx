@@ -111,6 +111,9 @@ export default function DynamicReviewForm({
   const renderField = (field: any) => {
     const { name, label, type, required = false, options, placeholder, min, max, section } = field;
     
+    // This ensures each field has a unique key at this level
+    const key = name;
+    
     switch (type) {
       case "text":
       case "email":
@@ -346,11 +349,9 @@ export default function DynamicReviewForm({
                 <div key={section}>
                   <h3 className="text-lg font-medium text-gray-900 mb-3">{section}</h3>
                   <div className="space-y-4">
-                    {groupedFields[section]?.map((field) => (
-                      <React.Fragment key={`${section}-${field.name}`}>
-                        {renderField(field)}
-                      </React.Fragment>
-                    ))}
+                    {groupedFields[section]?.map((field) => 
+                      renderField(field)
+                    )}
                   </div>
                 </div>
               ))}
@@ -360,11 +361,9 @@ export default function DynamicReviewForm({
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-3">Additional Information</h3>
                   <div className="space-y-4">
-                    {groupedFields['undefined'].map((field) => (
-                      <React.Fragment key={`undefined-${field.name}`}>
-                        {renderField(field)}
-                      </React.Fragment>
-                    ))}
+                    {groupedFields['undefined'].map((field) => 
+                      renderField(field)
+                    )}
                   </div>
                 </div>
               )}
