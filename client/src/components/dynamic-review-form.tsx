@@ -340,7 +340,11 @@ export default function DynamicReviewForm({
               {/* Handle case with no sections */}
               {sections.length === 0 && (
                 <div className="space-y-4">
-                  {formStructure.fields.map(renderField)}
+                  {formStructure.fields.map((field) => (
+                    <div key={field.name}>
+                      {renderField(field)}
+                    </div>
+                  ))}
                 </div>
               )}
               
@@ -349,9 +353,11 @@ export default function DynamicReviewForm({
                 <div key={section}>
                   <h3 className="text-lg font-medium text-gray-900 mb-3">{section}</h3>
                   <div className="space-y-4">
-                    {groupedFields[section]?.map((field) => 
-                      renderField(field)
-                    )}
+                    {groupedFields[section]?.map((field) => (
+                      <div key={`${section}-${field.name}`}>
+                        {renderField(field)}
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -361,9 +367,11 @@ export default function DynamicReviewForm({
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-3">Additional Information</h3>
                   <div className="space-y-4">
-                    {groupedFields['undefined'].map((field) => 
-                      renderField(field)
-                    )}
+                    {groupedFields['undefined'].map((field) => (
+                      <div key={`undefined-${field.name}`}>
+                        {renderField(field)}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
