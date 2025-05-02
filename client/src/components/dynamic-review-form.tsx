@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useForm } from "react-hook-form";
@@ -168,7 +168,7 @@ export default function DynamicReviewForm({
                 <SelectValue placeholder={placeholder || "Select an option"} />
               </SelectTrigger>
               <SelectContent>
-                {options?.map((option) => (
+                {options?.map((option: { value: string; label: string }) => (
                   <SelectItem key={`${name}-option-${option.value}`} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -191,7 +191,7 @@ export default function DynamicReviewForm({
               onValueChange={(value) => setValue(name, value)}
               className="flex flex-wrap gap-4"
             >
-              {options?.map((option) => (
+              {options?.map((option: { value: string; label: string }) => (
                 <div key={`${name}-option-${option.value}`} className="flex items-center space-x-2">
                   <RadioGroupItem value={option.value} id={`${name}-${option.value}`} />
                   <Label htmlFor={`${name}-${option.value}`} className="font-normal">
@@ -346,7 +346,11 @@ export default function DynamicReviewForm({
                 <div key={section}>
                   <h3 className="text-lg font-medium text-gray-900 mb-3">{section}</h3>
                   <div className="space-y-4">
-                    {groupedFields[section]?.map(renderField)}
+                    {groupedFields[section]?.map((field) => (
+                      <React.Fragment key={`${section}-${field.name}`}>
+                        {renderField(field)}
+                      </React.Fragment>
+                    ))}
                   </div>
                 </div>
               ))}
@@ -356,7 +360,11 @@ export default function DynamicReviewForm({
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-3">Additional Information</h3>
                   <div className="space-y-4">
-                    {groupedFields['undefined'].map(renderField)}
+                    {groupedFields['undefined'].map((field) => (
+                      <React.Fragment key={`undefined-${field.name}`}>
+                        {renderField(field)}
+                      </React.Fragment>
+                    ))}
                   </div>
                 </div>
               )}
