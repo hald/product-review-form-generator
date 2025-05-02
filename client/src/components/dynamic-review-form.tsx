@@ -78,25 +78,29 @@ export default function DynamicReviewForm({
     const currentRating = ratings[name] || 0;
     
     return (
-      <div className="space-y-2">
-        <Label htmlFor={name} className="block text-sm font-medium text-gray-900">
+      <div className="space-y-3">
+        <Label htmlFor={name} className="block text-base font-medium text-gray-800">
           {label} {required && <span className="text-red-500">*</span>}
         </Label>
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-2 star-rating">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={`${name}-star-${star}`}
               type="button"
               aria-label={`Rate ${star} out of 5`}
               onClick={() => handleRatingChange(name, star)}
-              className="focus:outline-none"
+              className="focus:outline-none star"
             >
               <Star
-                className={`h-6 w-6 ${star <= currentRating ? 'fill-amber-500 text-amber-500' : 'text-gray-300'}`}
+                className={`h-7 w-7 ${
+                  star <= currentRating 
+                    ? 'fill-amber-500 text-amber-500 drop-shadow-sm' 
+                    : 'text-gray-300 hover:text-gray-400'
+                }`}
               />
             </button>
           ))}
-          <span className="ml-2 text-sm text-gray-500">
+          <span className="ml-3 text-sm font-medium px-2 py-1 rounded-md bg-gray-100">
             {currentRating > 0 ? `${currentRating}/5` : 'Not rated'}
           </span>
         </div>
@@ -295,40 +299,50 @@ export default function DynamicReviewForm({
   };
 
   return (
-    <Card className="max-w-3xl mx-auto bg-white rounded-lg shadow-sm">
-      <CardContent className="p-6">
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-xl font-semibold">
-              Review Form for <span className="text-primary">{productType}</span>
+    <Card className="max-w-3xl mx-auto form-card rounded-xl">
+      <CardContent className="p-8">
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold">
+              Review <span className="text-primary font-extrabold">
+                {productType}
+              </span>
             </h2>
             <Button
               type="button"
               variant="ghost"
               size="sm"
               onClick={onBack}
-              className="text-gray-500 hover:text-gray-700 flex items-center text-sm"
+              className="text-gray-500 hover:text-gray-700 flex items-center text-sm rounded-full px-3 py-2 transition-all duration-200 hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4 mr-1" /> Change Product
             </Button>
           </div>
-          <p className="text-gray-600">Please fill out the form below to submit your product review.</p>
+          <p className="text-gray-600 text-sm">Please share your honest feedback about this product. Your insights help others make better decisions.</p>
         </div>
 
         {/* Loading state */}
         {!formStructure && (
-          <div className="py-4">
-            <div className="space-y-4">
-              <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
-              <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-              <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
-              <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+          <div className="py-6">
+            <div className="space-y-6">
+              <div className="h-5 bg-gray-100 rounded-lg w-1/3 animate-pulse"></div>
+              <div className="form-field animate-pulse bg-gray-50 h-16"></div>
+              
+              <div className="h-5 bg-gray-100 rounded-lg w-2/5 animate-pulse"></div>
+              <div className="form-field animate-pulse bg-gray-50 h-16"></div>
+              
+              <div className="h-5 bg-gray-100 rounded-lg w-1/4 animate-pulse"></div>
               <div className="grid grid-cols-2 gap-4">
-                <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
-                <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                <div className="form-field animate-pulse bg-gray-50 h-12"></div>
+                <div className="form-field animate-pulse bg-gray-50 h-12"></div>
               </div>
-              <div className="h-32 bg-gray-200 rounded animate-pulse"></div>
+              
+              <div className="h-5 bg-gray-100 rounded-lg w-1/3 animate-pulse"></div>
+              <div className="form-field animate-pulse bg-gray-50 h-32"></div>
+              
+              <div className="flex justify-end mt-8">
+                <div className="w-40 h-12 rounded-full bg-primary/40 animate-pulse"></div>
+              </div>
             </div>
           </div>
         )}
@@ -339,9 +353,9 @@ export default function DynamicReviewForm({
             <div className="space-y-6">
               {/* Handle case with no sections */}
               {sections.length === 0 && (
-                <div className="space-y-4">
+                <div className="space-y-5">
                   {formStructure.fields.map((field) => (
-                    <div key={field.name}>
+                    <div key={field.name} className="form-field">
                       {renderField(field)}
                     </div>
                   ))}
@@ -350,11 +364,11 @@ export default function DynamicReviewForm({
               
               {/* Render fields by section */}
               {sections.map((section) => (
-                <div key={section}>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">{section}</h3>
-                  <div className="space-y-4">
+                <div key={section} className="mb-8">
+                  <h3 className="section-title">{section}</h3>
+                  <div className="space-y-5">
                     {groupedFields[section]?.map((field) => (
-                      <div key={`${section}-${field.name}`}>
+                      <div key={`${section}-${field.name}`} className="form-field">
                         {renderField(field)}
                       </div>
                     ))}
@@ -364,11 +378,11 @@ export default function DynamicReviewForm({
               
               {/* Fields without section but when sections exist */}
               {sections.length > 0 && groupedFields['undefined']?.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">Additional Information</h3>
-                  <div className="space-y-4">
+                <div className="mb-8">
+                  <h3 className="section-title">Additional Information</h3>
+                  <div className="space-y-5">
                     {groupedFields['undefined'].map((field) => (
-                      <div key={`undefined-${field.name}`}>
+                      <div key={`undefined-${field.name}`} className="form-field">
                         {renderField(field)}
                       </div>
                     ))}
@@ -377,19 +391,19 @@ export default function DynamicReviewForm({
               )}
             </div>
             
-            <div className="mt-8 flex justify-end">
+            <div className="mt-10 flex justify-end">
               <Button
                 type="submit"
-                className="px-6 py-3 bg-primary text-white font-medium rounded-lg shadow hover:bg-primary/90 focus:ring-4 focus:ring-primary/30 focus:outline-none transition duration-150"
+                className="submit-button px-8 py-4 text-white font-medium rounded-full shadow-md hover:shadow-xl focus:ring-4 focus:ring-primary/30 focus:outline-none"
                 disabled={submitReviewMutation.isPending}
               >
                 {submitReviewMutation.isPending ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    <span>Submitting...</span>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <span className="font-semibold">Submitting...</span>
                   </>
                 ) : (
-                  <span>Submit Review</span>
+                  <span className="font-semibold">Submit Review</span>
                 )}
               </Button>
             </div>
